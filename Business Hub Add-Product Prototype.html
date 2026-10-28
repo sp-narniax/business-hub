@@ -1,0 +1,622 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Business Hub Add-Product Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600&display=swap">
+<style>
+/* Layout: Smartpress storefront chrome; intro band + two-column (aside / form card), stacks below 768px.
+   All values below come from the SPWDS - Style Dictionary Figma file (Primitives, Color Tokens, Spacing Tokens, SP-Typography text styles).
+   URW DIN / URW DIN Cond are the SPWDS faces; Barlow / Barlow Condensed stand in where URW DIN isn't installed. */
+:root{
+  color-scheme:light;
+  /* --- Primitives --- */
+  --brand-900:#00306b; --brand-800:#004d99; --brand-600:#006cbb; --brand-500:#007ac9; --brand-400:#3588cb;
+  --brand-200:#9acef0; --brand-100:#f0f6fc; --brand-50:#f8fbff;
+  --neutral-800:#333333; --neutral-700:#666666; --neutral-600:#999999; --neutral-500:#cccccc;
+  --neutral-400:#dddddd; --neutral-300:#f1f1f1; --neutral-200:#f7f7f7; --neutral-100:#f9f9f9; --white:#ffffff;
+  --sandstone-900:#b05b00; --sandstone-200:#fddcbd;
+  --alert-error-dark:#cc0000; --alert-error-light:#ffe5e5;
+  --alert-success-dark:#0b865c; --alert-success-light:#def2eb;
+  --alert-warning-dark:#ae921c; --alert-warning-light:#fffbcd;
+  --alert-info-light:#d2e3ff;
+
+  /* --- Color Tokens --- */
+  --text-dark:var(--neutral-800); --text-medium:var(--neutral-700); --text-light:var(--neutral-600);
+  --text-blue:var(--brand-500); --text-white:var(--white); --text-error:var(--alert-error-dark);
+  --text-success:var(--alert-success-dark); --text-warning:var(--alert-warning-dark); --text-info:var(--brand-800);
+  --text-pill:var(--sandstone-900); --text-disabled:var(--neutral-400);
+  --surface-white:var(--white); --surface-light:var(--neutral-200); --surface-medium:var(--neutral-400);
+  --surface-dark:var(--neutral-800); --surface-blue:var(--brand-500);
+  --surface-error:var(--alert-error-light); --surface-success:var(--alert-success-light);
+  --surface-warning:var(--alert-warning-light); --surface-info:var(--alert-info-light);
+  --surface-overlay:rgba(51,51,51,.25);
+  --border-light:var(--neutral-400); --border-medium:var(--neutral-600); --border-dark:var(--neutral-700);
+  --border-blue:var(--brand-500); --border-error:var(--alert-error-dark); --border-success:var(--alert-success-dark);
+  --icon-blue:var(--brand-500); --icon-warning:var(--alert-warning-dark); --icon-success:var(--alert-success-dark);
+  --primary-hover:var(--brand-400); --primary-pressed:var(--brand-600);
+  --secondary-hover:var(--neutral-300); --secondary-pressed:var(--neutral-100);
+  --form-hover:var(--brand-50); --disabled:var(--neutral-400);
+  --muted:var(--text-medium);
+
+  /* --- Spacing Tokens --- */
+  --space025:1px; --space05:2px; --space1:4px; --space2:8px; --space3:12px; --space4:16px; --space5:20px;
+  --space6:24px; --space7:28px; --space10:40px; --space12:48px; --space16:64px; --space20:80px;
+  --padding-xsmall:var(--space2); --padding-small:var(--space3); --padding-medium:var(--space4);
+  --padding-large:var(--space5); --padding-xlarge:var(--space6); --padding-xxlarge:var(--space7); --padding-xxxlarge:var(--space10);
+  --radius-small:var(--space1); --radius-medium:var(--space2); --radius-large:var(--space4); --radius-xlarge:var(--space6);
+  --border-width-small:var(--space025); --border-width-medium:var(--space05); --border-width-large:var(--space1);
+  --page-margin-small:var(--space5); --page-margin-large:var(--space10);
+
+  /* --- Fonts --- */
+  --font-sans:"URW DIN","Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-cond:"URW DIN Cond","Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --w-regular:400; --w-medium:500; --w-demi:600; --w-bold:700;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--surface-white);color:var(--text-dark);font-family:var(--font-sans);
+  /* body-small */ font-size:14px;line-height:20px;letter-spacing:.01em}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--brand-900)}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(var(--page-margin-small),env(safe-area-inset-left,0px));padding-right:max(var(--page-margin-small),env(safe-area-inset-right,0px))}
+h1,h2,h3{margin:0;text-wrap:balance}
+button,input,select,textarea{font:inherit;color:inherit;letter-spacing:inherit}
+:focus-visible{outline:var(--border-width-medium) solid var(--border-blue);outline-offset:var(--space05)}
+a{color:var(--text-blue)}
+
+/* ---- Type styles (SP-Typography) ---- */
+.t-headline-alt-large{font-family:var(--font-sans);font-weight:var(--w-demi);font-size:36px;line-height:40px;letter-spacing:-.02em}
+.t-headline-alt-xsmall{font-family:var(--font-sans);font-weight:var(--w-demi);font-size:24px;line-height:28px;letter-spacing:-.02em}
+.t-title-xsmall-loose{font-weight:var(--w-regular);font-size:12px;line-height:16px;letter-spacing:.08em;text-transform:uppercase}
+.t-title-medium-tight{font-weight:var(--w-bold);font-size:16px;line-height:20px;letter-spacing:.04em}
+.t-subtitle-large{font-weight:var(--w-medium);font-size:20px;line-height:24px;letter-spacing:.02em}
+.t-subtitle-medium{font-weight:var(--w-medium);font-size:16px;line-height:20px;letter-spacing:.02em}
+.t-subtitle-small{font-weight:var(--w-medium);font-size:14px;line-height:16px;letter-spacing:.02em}
+.t-body-medium-loose{font-size:16px;line-height:28px;letter-spacing:.01em}
+.t-body-xsmall{font-size:12px;line-height:14px;letter-spacing:.01em}
+.t-button{font-weight:var(--w-demi);font-size:14px;line-height:18px;letter-spacing:.12em;text-transform:uppercase}
+
+/* ---- Header ---- */
+.promo{background:var(--brand-900);color:var(--text-white);text-align:center;padding-block:var(--space2);
+  font-weight:var(--w-medium);font-size:14px;line-height:16px;letter-spacing:.02em}
+.top{background:var(--surface-blue);color:var(--text-white)}
+.top .wrap{display:flex;align-items:center;gap:var(--space5);padding-block:var(--space3)}
+.logo{font-family:var(--font-cond);font-weight:var(--w-demi);font-size:26px;line-height:28px;letter-spacing:.02em;color:var(--text-white);background:none;border:0;padding:0;cursor:pointer}
+.search{flex:1;min-width:0}
+.search input{width:100%;border:0;border-radius:var(--radius-small);padding:var(--space2) var(--space3);background:var(--surface-white);color:var(--text-dark);font-size:14px;line-height:16px}
+.search input::placeholder{color:var(--text-light)}
+.hublink{color:var(--text-white);background:none;border:0;cursor:pointer;white-space:nowrap;padding:var(--space1) 0;
+  /* Link-Medium */ font-weight:var(--w-medium);font-size:14px;line-height:14px;letter-spacing:.04em}
+.hublink:hover{text-decoration:underline}
+
+main{padding-block:var(--space10) var(--space16)}
+.eyebrow{color:var(--text-medium)}
+.pagetitle{margin-top:var(--space2);color:var(--text-dark)}
+
+/* ---- Fit band ---- */
+.fit{margin-top:var(--space6);background:var(--surface-light);border:var(--border-width-small) solid var(--border-light);border-radius:var(--radius-medium);
+  padding:var(--padding-xlarge);display:grid;grid-template-columns:1fr minmax(0,380px);gap:var(--space6);align-items:center}
+.fit p{margin:var(--space2) 0 var(--space2)}
+.fit ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--space2)}
+.fit li{display:flex;gap:var(--space3);align-items:center}
+.fit li svg{color:var(--icon-blue);flex:none}
+.reorder-note{background:var(--surface-white);border:var(--border-width-small) solid var(--border-light);border-radius:var(--radius-medium);padding:var(--padding-small) var(--padding-medium);display:flex;gap:var(--space3)}
+.reorder-note svg{color:var(--icon-warning);flex:none;margin-top:var(--space05)}
+.reorder-note button{background:none;border:0;padding:0;color:var(--text-blue);text-decoration:underline;cursor:pointer;font-weight:var(--w-medium);letter-spacing:.04em}
+
+/* ---- Two-column ---- */
+.cols{margin-top:var(--space10);display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:var(--space10);align-items:start}
+.imgph{aspect-ratio:300/155;max-width:100%;border:var(--border-width-small) dashed var(--border-blue);background:var(--brand-100);border-radius:var(--radius-medium);display:grid;place-items:center;color:var(--text-blue)}
+aside p{margin:var(--space4) 0 0}
+
+/* Buttons (SPWDS Buttons / Primary + Secondary + Tertiary) */
+.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-xlarge);
+  padding:var(--padding-medium) var(--padding-large);cursor:pointer;border:0;
+  background:var(--surface-blue);color:var(--text-white);
+  font-weight:var(--w-demi);font-size:14px;line-height:18px;letter-spacing:.12em;text-transform:uppercase}
+.btn:hover{background:var(--primary-hover)}
+.btn:active{background:var(--primary-pressed)}
+.btn.ghost,.consult{background:transparent;color:var(--text-blue);border:var(--border-width-medium) solid var(--border-blue);padding:calc(var(--padding-medium) - var(--border-width-medium)) calc(var(--padding-large) - var(--border-width-medium))}
+.btn.ghost:hover,.consult:hover{background:var(--secondary-hover)}
+.btn.ghost:active,.consult:active{background:var(--secondary-pressed)}
+.consult{margin-top:var(--space4);width:100%;border-radius:var(--radius-xlarge);cursor:pointer}
+.sbtn{background:transparent;color:var(--text-blue);border:0;border-radius:var(--radius-xlarge);padding:var(--padding-xsmall) var(--padding-small);cursor:pointer;
+  font-weight:var(--w-medium);font-size:14px;line-height:18px;letter-spacing:.04em}
+.sbtn:hover{background:var(--secondary-hover)}
+.sbtn:active{background:var(--secondary-pressed)}
+.sbtn:disabled{color:var(--text-disabled);background:transparent;cursor:default}
+
+/* ---- Form card ---- */
+.card{border:var(--border-width-small) solid var(--border-light);border-radius:var(--radius-large);background:var(--surface-white);
+  padding:var(--padding-xxlarge) var(--padding-xlarge) var(--padding-xlarge);box-shadow:0 2px 8px rgba(51,51,51,.08)}
+.sub{color:var(--text-medium);margin:var(--space1) 0 0}
+.req{color:var(--text-error)}
+.flbl{margin:var(--space6) 0 var(--space2);display:block}
+.choice{display:grid;grid-template-columns:1fr 1fr;gap:var(--space3)}
+.choice button{text-align:left;border:var(--border-width-small) solid var(--border-medium);border-radius:var(--radius-medium);background:var(--surface-white);
+  padding:var(--padding-small) var(--padding-medium);cursor:pointer;display:grid;gap:var(--space1)}
+.choice button:hover{background:var(--form-hover)}
+.choice button b{font-weight:var(--w-medium);font-size:16px;line-height:20px;letter-spacing:.02em}
+.choice button span{font-size:12px;line-height:14px;color:var(--text-medium)}
+.choice button[aria-pressed="true"]{background:var(--brand-100);border:var(--border-width-medium) solid var(--border-blue);padding:calc(var(--padding-small) - 1px) calc(var(--padding-medium) - 1px)}
+.choice button[aria-pressed="true"] b{color:var(--text-blue)}
+
+.sect{margin-top:var(--space7);color:var(--text-blue);font-weight:var(--w-bold)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:var(--space4)}
+.field{display:flex;flex-direction:column;gap:var(--space2);margin-top:var(--space4);min-width:0}
+.field label{font-weight:var(--w-medium);font-size:14px;line-height:16px;letter-spacing:.02em}
+.hint{font-size:12px;line-height:14px;color:var(--text-medium);margin-top:calc(-1 * var(--space1))}
+/* SPWDS text input / dropdown: white field, border-medium, radius-medium, padding 12/16, FormValue-Regular */
+.field input,.field select,.field textarea{width:100%;background:var(--surface-white);border:var(--border-width-small) solid var(--border-medium);border-radius:var(--radius-medium);
+  padding:var(--padding-small) var(--padding-medium);font-weight:var(--w-medium);font-size:16px;line-height:20px;letter-spacing:0;color:var(--text-dark)}
+.field input:hover,.field select:hover,.field textarea:hover{background:var(--form-hover)}
+.field input:focus,.field select:focus,.field textarea:focus{outline:0;border-color:var(--border-blue);box-shadow:0 0 0 1px var(--border-blue)}
+.field textarea{min-height:96px;resize:vertical}
+.field input::placeholder,.field textarea::placeholder{color:var(--text-light);font-weight:var(--w-regular)}
+.field.invalid label{color:var(--text-error)}
+.field.invalid input,.field.invalid textarea,.field.invalid select{border-color:var(--border-error)}
+.field.invalid input:focus,.field.invalid textarea:focus,.field.invalid select:focus{box-shadow:0 0 0 1px var(--border-error)}
+.errmsg{font-size:14px;line-height:16px;color:var(--text-error);display:none}
+.field.invalid .errmsg{display:block}
+hr.div{border:0;border-top:var(--border-width-small) solid var(--border-light);margin:var(--space7) 0 0}
+
+.signedin{margin-top:var(--space5);background:var(--surface-info);border-radius:var(--radius-medium);padding:var(--padding-small) var(--padding-medium);display:flex;gap:var(--space3);align-items:center;color:var(--text-info)}
+.signedin svg{color:var(--text-info);flex:none}
+.specs{margin-top:var(--space4);border:var(--border-width-small) solid var(--border-light);border-radius:var(--radius-medium);padding:var(--padding-medium) var(--padding-large);background:var(--surface-light)}
+.specs .hd{display:flex;justify-content:space-between;gap:var(--space3);flex-wrap:wrap;align-items:baseline}
+.specs h3{font-weight:var(--w-bold);font-size:16px;line-height:20px;letter-spacing:.04em}
+.specs .meta{font-size:12px;line-height:14px;color:var(--text-medium);font-variant-numeric:tabular-nums}
+.specs dl{display:grid;grid-template-columns:1fr 1fr;gap:var(--space1) var(--space6);margin:var(--space3) 0 0}
+.specs dl div{display:flex;gap:var(--space1);min-width:0}
+.specs dt{color:var(--text-medium)}
+.specs dd{margin:0}
+.specs .note{font-size:12px;line-height:14px;color:var(--text-medium);margin:var(--space3) 0 0}
+
+.actions{display:flex;justify-content:center;margin-top:var(--space6)}
+/* Notification / Error (Regular) */
+.formerr{margin-top:var(--space5);background:var(--surface-error);border:var(--border-width-small) solid var(--border-error);color:var(--text-error);border-radius:var(--radius-medium);padding:var(--padding-small) var(--padding-medium);font-size:14px;line-height:16px;text-align:left}
+
+/* ---- Confirmation / other views ---- */
+.panel{max-width:720px;margin:var(--space2) auto 0}
+.okbadge{width:var(--space12);height:var(--space12);border-radius:50%;background:var(--surface-success);color:var(--icon-success);display:grid;place-items:center}
+#confLead{margin:var(--space3) 0 0;max-width:62ch}
+.summary{margin:var(--space6) 0 0;border:var(--border-width-small) solid var(--border-light);border-radius:var(--radius-medium);overflow:hidden}
+.summary div{display:grid;grid-template-columns:170px 1fr;gap:var(--space3);padding:var(--padding-small) var(--padding-medium);border-top:var(--border-width-small) solid var(--border-light)}
+.summary div:first-child{border-top:0}
+.summary dt{color:var(--text-medium)} .summary dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.nexthd{margin-top:var(--space10)}
+.steps{margin:var(--space4) 0 0;padding:0;list-style:none;display:grid;gap:var(--space3);counter-reset:s}
+.steps li{display:flex;gap:var(--space3);align-items:center}
+.steps li::before{counter-increment:s;content:counter(s);flex:none;width:var(--space6);height:var(--space6);border-radius:50%;background:var(--brand-100);color:var(--text-blue);font-weight:var(--w-bold);font-size:12px;display:grid;place-items:center}
+.row-actions{display:flex;gap:var(--space3);flex-wrap:wrap;margin-top:var(--space7)}
+
+.tablewrap{overflow-x:auto;margin-top:var(--space6);border:var(--border-width-small) solid var(--border-light);border-radius:var(--radius-medium)}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{text-align:left;padding:var(--padding-small) var(--padding-medium);border-top:var(--border-width-small) solid var(--border-light);vertical-align:middle}
+thead th{border-top:0;background:var(--surface-light);color:var(--text-medium);font-weight:var(--w-regular);font-size:12px;line-height:16px;letter-spacing:.08em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+/* Pill-Small type; status colors from alert tokens */
+.pill{display:inline-block;font-weight:var(--w-bold);font-size:12px;line-height:16px;letter-spacing:.08em;text-transform:uppercase;
+  padding:var(--space1) var(--space3);border-radius:var(--radius-xlarge);background:var(--surface-success);color:var(--text-success);white-space:nowrap}
+.pill.pending{background:var(--sandstone-200);color:var(--text-pill)}
+.headrow{display:flex;justify-content:space-between;align-items:end;gap:var(--space4);flex-wrap:wrap}
+
+/* ---- Modal ---- */
+.scrim{position:fixed;inset:0;background:var(--surface-overlay);display:grid;place-items:center;z-index:50;padding:var(--space4)}
+.modal{background:var(--surface-white);border-radius:var(--radius-large);max-width:480px;width:100%;padding:var(--padding-xlarge);box-shadow:0 8px 32px rgba(51,51,51,.25);max-height:90vh;overflow:auto}
+.modal .x{float:right;background:none;border:0;font-size:24px;line-height:1;cursor:pointer;color:var(--text-medium);padding:var(--space1)}
+.modal .lead{margin:var(--space2) 0 0;color:var(--text-medium)}
+.days{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--space2);margin-top:var(--space5)}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space2);margin-top:var(--space3)}
+.days button,.slots button{border:var(--border-width-small) solid var(--border-medium);background:var(--surface-white);border-radius:var(--radius-medium);padding:var(--space2) var(--space1);cursor:pointer;font-variant-numeric:tabular-nums}
+.days button:hover,.slots button:hover{background:var(--form-hover)}
+.days button small{display:block;color:var(--text-medium);font-size:12px;line-height:14px}
+.days button[aria-pressed="true"],.slots button[aria-pressed="true"]{background:var(--brand-100);border-color:var(--border-blue);box-shadow:0 0 0 1px var(--border-blue);color:var(--text-blue);font-weight:var(--w-medium)}
+
+.toast{position:fixed;left:50%;bottom:calc(var(--space5) + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--surface-dark);color:var(--text-white);padding:var(--padding-small) var(--padding-large);border-radius:var(--radius-medium);z-index:60;max-width:calc(100% - 32px)}
+
+footer.mock{background:var(--surface-light);text-align:center;font-size:12px;line-height:14px;color:var(--text-medium);padding-block:var(--space6)}
+
+@media (min-width:1024px){
+  .wrap{padding-left:max(var(--page-margin-large),env(safe-area-inset-left,0px));padding-right:max(var(--page-margin-large),env(safe-area-inset-right,0px))}
+}
+@media (max-width:768px){
+  .fit{grid-template-columns:1fr}
+  .cols{grid-template-columns:1fr;gap:var(--space6)}
+  aside{order:2}
+  .t-headline-alt-large{font-size:28px;line-height:32px} /* headline-alt-small */
+}
+@media (max-width:480px){
+  .top .wrap{flex-wrap:wrap;gap:var(--space2) var(--space4)}
+  .search{order:3;flex-basis:100%}
+  .hublink{margin-left:auto}
+  .choice,.grid2,.specs dl{grid-template-columns:1fr}
+  .card{padding:var(--padding-large) var(--padding-medium)}
+  .summary div{grid-template-columns:1fr;gap:var(--space05)}
+  .days{grid-template-columns:repeat(3,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+
+<div class="promo"><div class="wrap">Business Hub: reorder your company's products any time</div></div>
+<header class="top"><div class="wrap">
+  <button class="logo" id="logoBtn" type="button">SMARTPRESS</button>
+  <div class="search"><input id="search" type="search" placeholder="Search Products" aria-label="Search products"></div>
+  <button class="hublink" id="hubBtn" type="button">My Business Hub</button>
+</div></header>
+
+<main class="wrap">
+
+<!-- ========== REQUEST VIEW ========== -->
+<section id="view-request">
+  <div class="eyebrow t-title-xsmall-loose">Business Hub ordering</div>
+  <h1 class="pagetitle t-headline-alt-large">Add a product to your Business Hub</h1>
+
+  <div class="fit">
+    <div>
+      <h2 class="t-title-medium-tight">Is Business Hub a good fit for your product?</h2>
+      <p>It's a good fit when:</p>
+      <ul>
+        <li><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2"/></svg>The specs stay the same every time you order</li>
+        <li><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2"/></svg>Artwork changes are minimal</li>
+      </ul>
+    </div>
+    <div class="reorder-note">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5v4.2M8 10.6v.9" stroke="currentColor" stroke-width="1.6"/></svg>
+      <div><b>Just ordering the same thing again?</b> Use the Reorder button in your <button type="button" id="toOrders">order history</button> instead. No form needed.</div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <aside>
+      <div class="imgph t-subtitle-small">[Image: Business Hub products]</div>
+      <button class="consult t-button" type="button" id="consultBtn">Schedule a video consultation</button>
+      <p>Tell us about the product you want in your Business Hub. We'll set it up so you and your team can reorder it whenever you need it.</p>
+      <p>Not sure about the specs? Book a video call and we'll work them out with you.</p>
+    </aside>
+
+    <form class="card" id="reqForm" novalidate>
+      <h2 class="t-headline-alt-xsmall">Request a Business Hub product</h2>
+      <p class="sub">We'll respond within one business day</p>
+      <p class="sub"><span class="req">*</span>indicates a required field</p>
+
+      <span class="flbl t-subtitle-small" id="choiceLbl">What would you like to add?</span>
+      <div class="choice" role="group" aria-labelledby="choiceLbl">
+        <button type="button" id="modeNew" aria-pressed="true"><b>Something new</b><span>Tell us what you need</span></button>
+        <button type="button" id="modePast" aria-pressed="false"><b>A product I've ordered before</b><span>Pick it from your past orders</span></button>
+      </div>
+
+      <!-- Something new -->
+      <div id="newBlock">
+        <div class="sect t-title-xsmall-loose">Contact information</div>
+        <div class="grid2">
+          <div class="field" data-req><label for="fname">First name<span class="req">*</span></label><input id="fname" autocomplete="given-name"><span class="errmsg">Enter your first name.</span></div>
+          <div class="field" data-req><label for="lname">Last name<span class="req">*</span></label><input id="lname" autocomplete="family-name"><span class="errmsg">Enter your last name.</span></div>
+        </div>
+        <div class="field" data-req data-type="email"><label for="email">Email<span class="req">*</span></label><input id="email" type="email" autocomplete="email"><span class="errmsg">Enter an email address like name@company.com.</span></div>
+        <div class="field" data-req data-type="phone"><label for="phone">Phone number<span class="req">*</span></label><input id="phone" type="tel" autocomplete="tel"><span class="errmsg">Enter a phone number with at least 10 digits.</span></div>
+        <div class="field"><label for="company">Company name</label><input id="company" autocomplete="organization"></div>
+        <hr class="div">
+        <div class="sect t-title-xsmall-loose">Your product</div>
+        <div class="field"><label for="newName">What should we call this product?</label><input id="newName" placeholder="e.g. Spring Sales Brochure"></div>
+        <div class="field" data-req><label for="newAbout">Tell us about it<span class="req">*</span></label>
+          <span class="hint">Share whatever you know. For example: size, paper, ink, number of pages, versions, finishing, mailing, and who else on your team needs to order it. We'll fill in the rest with you.</span>
+          <textarea id="newAbout"></textarea><span class="errmsg">Tell us a little about the product so we can set it up.</span></div>
+      </div>
+
+      <!-- Ordered before -->
+      <div id="pastBlock" hidden>
+        <div class="signedin">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5.5" r="2.8" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 14c.6-3 2.9-4.5 5.5-4.5s4.9 1.5 5.5 4.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+          <span>Signed in as <b>Jordan Ellis</b>, Northwind Dental Group. We'll use the contact details on your account.</span>
+        </div>
+        <div class="field" data-req><label for="pastOrder">Choose a product from your orders<span class="req">*</span></label>
+          <span class="hint">Showing your orders from the last 12 months</span>
+          <select id="pastOrder"></select><span class="errmsg">Choose a product from your orders.</span></div>
+        <div class="specs" id="specCard" hidden></div>
+        <div class="field"><label for="pastName">What should we call it in your Business Hub?</label><input id="pastName"></div>
+        <div class="field"><label for="pastNotes">Anything we should know?</label>
+          <span class="hint">Optional. For example: a small artwork update, or teammates who need to order it.</span>
+          <textarea id="pastNotes" style="min-height:72px"></textarea></div>
+      </div>
+
+      <div class="formerr" id="formErr" hidden>Some required fields need attention. They're marked in red above.</div>
+      <div class="actions"><button class="btn" type="submit" id="submitBtn">Submit</button></div>
+    </form>
+  </div>
+</section>
+
+<!-- ========== CONFIRMATION VIEW ========== -->
+<section id="view-confirmation" hidden>
+  <div class="panel">
+    <div class="okbadge"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+    <div class="eyebrow t-title-xsmall-loose" style="margin-top:var(--space4)">Request received</div>
+    <h1 class="pagetitle t-headline-alt-large" id="confTitle">We're setting up your product</h1>
+    <p id="confLead" class="t-body-medium-loose"></p>
+    <dl class="summary" id="confSummary"></dl>
+    <h2 class="nexthd t-subtitle-large">What happens next</h2>
+    <ol class="steps" id="confSteps"></ol>
+    <div class="row-actions">
+      <button class="btn" type="button" id="confHub">Go to My Business Hub</button>
+      <button class="btn ghost" type="button" id="confAnother">Add another product</button>
+    </div>
+  </div>
+</section>
+
+<!-- ========== HUB VIEW ========== -->
+<section id="view-hub" hidden>
+  <div class="headrow">
+    <div><div class="eyebrow t-title-xsmall-loose">Northwind Dental Group</div><h1 class="pagetitle t-headline-alt-large">My Business Hub</h1></div>
+    <button class="btn" type="button" id="hubAdd">Add a product</button>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Product</th><th>Specs</th><th>Status</th><th></th></tr></thead>
+    <tbody id="hubRows"></tbody>
+  </table></div>
+</section>
+
+<!-- ========== ORDER HISTORY VIEW ========== -->
+<section id="view-orders" hidden>
+  <div class="headrow">
+    <div><div class="eyebrow t-title-xsmall-loose">My account</div><h1 class="pagetitle t-headline-alt-large">Order history</h1></div>
+    <button class="btn ghost" type="button" id="ordersBack">Back to Add a product</button>
+  </div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Order</th><th>Product</th><th>Date</th><th>Qty</th><th></th></tr></thead>
+    <tbody id="orderRows"></tbody>
+  </table></div>
+</section>
+
+</main>
+
+<footer class="mock"><div class="wrap">Mockup for internal review. Not a live page. Orders in the dropdown are made-up samples.</div></footer>
+
+<!-- Consultation modal -->
+<div class="scrim" id="consultModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="cTitle">
+    <button class="x" type="button" id="cClose" aria-label="Close">×</button>
+    <div id="cPick">
+      <h2 id="cTitle" class="t-headline-alt-xsmall">Schedule a video consultation</h2>
+      <p class="lead">30 minutes with a Business Hub specialist. Times shown in Central Time.</p>
+      <div class="days" id="cDays"></div>
+      <div class="slots" id="cSlots"></div>
+      <div class="field" style="margin-top:var(--space5)"><label for="cTopic">What would you like to talk about? (optional)</label><input id="cTopic" placeholder="e.g. Specs for our new patient folder"></div>
+      <div class="formerr" id="cErr" hidden>Choose a day and a time.</div>
+      <div class="actions"><button class="btn" type="button" id="cBook">Book consultation</button></div>
+    </div>
+    <div id="cDone" hidden>
+      <div class="okbadge"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+      <h2 class="t-headline-alt-xsmall" style="margin-top:var(--space3)">You're booked</h2>
+      <p id="cDoneText"></p>
+      <div class="actions"><button class="btn" type="button" id="cOk">Done</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+const $ = id => document.getElementById(id);
+
+/* ---------- Sample data ---------- */
+const ORDERS = [
+  {id:"SP-48213", name:"Business cards – Dr. Patel", date:"Sep 2026", qty:"500",
+   specs:{Size:"3.5 x 2 in", Paper:"16pt matte cover", Sides:"Full color, 2 sides", Finishing:"Rounded corners"}},
+  {id:"SP-47790", name:"Appointment reminder postcards", date:"Aug 2026", qty:"2,500",
+   specs:{Size:"6 x 4 in", Paper:"14pt gloss cover", Sides:"Full color, 2 sides", Finishing:"None"}},
+  {id:"SP-46102", name:"Product catalog", date:"Jul 2026", qty:"250",
+   specs:{Size:"8.5 x 11 in", Paper:"80# gloss text, 100# gloss cover", Pages:"24 plus cover", Finishing:"Saddle stitch"}},
+  {id:"SP-45531", name:"Letterhead", date:"Jun 2026", qty:"1,000",
+   specs:{Size:"8.5 x 11 in", Paper:"70# uncoated text", Sides:"Full color, 1 side", Finishing:"None"}},
+  {id:"SP-44017", name:"#10 Envelopes", date:"Apr 2026", qty:"1,000",
+   specs:{Size:"4.125 x 9.5 in", Paper:"24# white wove", Ink:"Full color return address", Finishing:"Standard window"}},
+  {id:"SP-42288", name:"New patient welcome folder", date:"Feb 2026", qty:"500",
+   specs:{Size:"9 x 12 in", Paper:"14pt gloss cover", Pockets:"2 pockets, card slits", Finishing:"Soft-touch laminate"}},
+  {id:"SP-40954", name:"Retractable banner", date:"Dec 2025", qty:"2",
+   specs:{Size:"33 x 81 in", Material:"13oz vinyl", Hardware:"Standard retractable stand", Finishing:"Carry case"}},
+];
+const HUB = [
+  {name:"Business cards – Front desk", specs:"3.5 x 2 in · 16pt matte · 2 sides", status:"Ready to order"},
+  {name:"Prescription pads", specs:"4.25 x 5.5 in · 50 sheets/pad", status:"Ready to order"},
+  {name:"Referral cards", specs:"3.5 x 2 in · 14pt gloss · 2 sides", status:"Ready to order"},
+];
+
+/* ---------- Routing (hash) ---------- */
+const VIEWS = ["request","confirmation","hub","orders"];
+let mode = "new";
+function show(view, opts){
+  VIEWS.forEach(v => $("view-"+v).hidden = (v!==view));
+  if(view==="request") setMode(opts && opts.mode ? opts.mode : mode);
+  if(view==="hub") renderHub();
+  if(view==="orders") renderOrders();
+  window.scrollTo(0,0);
+}
+function go(hash){ if(location.hash==="#"+hash) route(); else location.hash = hash; }
+function route(){
+  const h = location.hash.replace("#","");
+  if(h==="past-order") return show("request",{mode:"past"});
+  if(h==="new" || h==="" ) return show("request",{mode:"new"});
+  if(h==="hub") return show("hub");
+  if(h==="orders") return show("orders");
+  if(h==="confirmation" && lastSubmission) return show("confirmation");
+  show("request");
+}
+window.addEventListener("hashchange", route);
+
+/* ---------- Mode toggle ---------- */
+function setMode(m){
+  mode = m;
+  $("modeNew").setAttribute("aria-pressed", m==="new");
+  $("modePast").setAttribute("aria-pressed", m==="past");
+  $("newBlock").hidden = m!=="new";
+  $("pastBlock").hidden = m!=="past";
+  $("formErr").hidden = true;
+  document.querySelectorAll("#reqForm .field.invalid").forEach(f=>f.classList.remove("invalid"));
+}
+$("modeNew").onclick = () => { setMode("new"); history.replaceState(null,"","#new"); };
+$("modePast").onclick = () => { setMode("past"); history.replaceState(null,"","#past-order"); };
+
+/* ---------- Past orders dropdown ---------- */
+const sel = $("pastOrder");
+sel.innerHTML = '<option value="">Select a product…</option>' +
+  ORDERS.map((o,i)=>`<option value="${i}">${esc(o.name)} (${o.date})</option>`).join("");
+let nameTouched = false;
+$("pastName").addEventListener("input", ()=>{ nameTouched = $("pastName").value.trim()!==""; });
+sel.addEventListener("change", ()=>{
+  const o = ORDERS[sel.value];
+  const card = $("specCard");
+  sel.closest(".field").classList.remove("invalid");
+  if(!o){ card.hidden = true; if(!nameTouched) $("pastName").value=""; return; }
+  card.innerHTML = `<div class="hd"><h3>${esc(o.name)}</h3><span class="meta">Order #${o.id} · ${o.date} · Qty ${o.qty}</span></div>
+    <dl>${Object.entries(o.specs).map(([k,v])=>`<div><dt>${k}:</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>
+    <p class="note">We'll copy these specs into your Business Hub product.</p>`;
+  card.hidden = false;
+  if(!nameTouched) $("pastName").value = o.name;
+});
+
+/* ---------- Validation + submit ---------- */
+function validField(f){
+  const el = f.querySelector("input,textarea,select");
+  const v = el.value.trim();
+  let ok = v!=="";
+  if(ok && f.dataset.type==="email") ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  if(ok && f.dataset.type==="phone") ok = v.replace(/\D/g,"").length>=10;
+  f.classList.toggle("invalid", !ok);
+  return ok;
+}
+document.querySelectorAll("#reqForm .field[data-req]").forEach(f=>{
+  const el = f.querySelector("input,textarea,select");
+  el.addEventListener("blur", ()=>{ if(el.value.trim()!=="" || f.classList.contains("invalid")) validField(f); });
+  el.addEventListener("input", ()=>{ if(f.classList.contains("invalid")) validField(f); });
+});
+
+let lastSubmission = null;
+$("reqForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const block = mode==="new" ? $("newBlock") : $("pastBlock");
+  const fields = [...block.querySelectorAll(".field[data-req]")];
+  const results = fields.map(validField);
+  if(results.includes(false)){
+    $("formErr").hidden = false;
+    fields[results.indexOf(false)].querySelector("input,textarea,select").focus();
+    return;
+  }
+  $("formErr").hidden = true;
+  if(mode==="new"){
+    const name = $("newName").value.trim() || "New product (name to be confirmed)";
+    lastSubmission = {mode, name, rows:[
+      ["Request type","Something new"],
+      ["Contact", `${$("fname").value.trim()} ${$("lname").value.trim()}`],
+      ["Email", $("email").value.trim()],
+      ["Phone", $("phone").value.trim()],
+      ["Company", $("company").value.trim() || "—"],
+      ["Product name", name],
+      ["Details", $("newAbout").value.trim()],
+    ]};
+  } else {
+    const o = ORDERS[sel.value];
+    const name = $("pastName").value.trim() || o.name;
+    lastSubmission = {mode, name, order:o, rows:[
+      ["Request type","A product I've ordered before"],
+      ["Contact","Jordan Ellis, Northwind Dental Group"],
+      ["Based on order", `#${o.id} · ${o.name} · ${o.date}`],
+      ["Specs", Object.entries(o.specs).map(([k,v])=>`${k}: ${v}`).join("\n")],
+      ["Hub product name", name],
+      ["Notes", $("pastNotes").value.trim() || "—"],
+    ]};
+  }
+  HUB.unshift({name:lastSubmission.name,
+    specs: mode==="past" ? Object.values(lastSubmission.order.specs).slice(0,3).join(" · ") : "Specs to be confirmed with you",
+    status:"Pending setup"});
+  renderConfirmation();
+  go("confirmation");
+});
+
+function renderConfirmation(){
+  const s = lastSubmission;
+  $("confTitle").textContent = s.mode==="past" ? "We're adding it to your Business Hub" : "We've got your request";
+  $("confLead").textContent = s.mode==="past"
+    ? `We'll copy the specs from your past order into “${s.name}”. A confirmation email is on its way to jordan.ellis@northwinddental.com.`
+    : `A Business Hub specialist will review “${s.name}” and reach out within one business day.`;
+  $("confSummary").innerHTML = s.rows.map(([k,v])=>`<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("");
+  const steps = s.mode==="past"
+    ? ["We set up the product using the specs from your past order.","You get an email when it's ready, usually within one business day.","You and your team can order it from My Business Hub any time."]
+    : ["A specialist reviews your request and contacts you to confirm specs and pricing.","We build the product template in your Business Hub.","You and your team can order it from My Business Hub any time."];
+  $("confSteps").innerHTML = steps.map(t=>`<li>${esc(t)}</li>`).join("");
+}
+$("confHub").onclick = ()=> go("hub");
+$("confAnother").onclick = ()=>{ resetForm(); go(mode==="past"?"past-order":"new"); };
+
+function resetForm(){
+  $("reqForm").reset(); nameTouched=false; $("specCard").hidden = true;
+}
+
+/* ---------- Hub + Orders ---------- */
+function renderHub(){
+  $("hubRows").innerHTML = HUB.map(p=>`<tr><td><b>${esc(p.name)}</b></td><td>${esc(p.specs)}</td>
+    <td><span class="pill ${p.status==="Pending setup"?"pending":""}">${p.status}</span></td>
+    <td><button class="sbtn" type="button" ${p.status==="Pending setup"?"disabled":""} data-order="${esc(p.name)}">Order</button></td></tr>`).join("");
+}
+$("hubRows").addEventListener("click", e=>{
+  const b = e.target.closest("button[data-order]"); if(!b || b.disabled) return;
+  toast(`Opened “${b.dataset.order}” for ordering (prototype stops here).`);
+});
+function renderOrders(){
+  $("orderRows").innerHTML = ORDERS.map((o,i)=>`<tr><td class="num">#${o.id}</td><td>${esc(o.name)}</td><td class="num">${o.date}</td><td class="num">${o.qty}</td>
+    <td style="white-space:nowrap"><button class="sbtn" type="button" data-reorder="${i}">Reorder</button></td></tr>`).join("");
+}
+$("orderRows").addEventListener("click", e=>{
+  const b = e.target.closest("button[data-reorder]"); if(!b) return;
+  toast(`“${ORDERS[b.dataset.reorder].name}” added to cart with the same specs.`);
+});
+$("hubAdd").onclick = ()=> go("new");
+$("hubBtn").onclick = ()=> go("hub");
+$("logoBtn").onclick = ()=> go("new");
+$("toOrders").onclick = ()=> go("orders");
+$("ordersBack").onclick = ()=> go(mode==="past"?"past-order":"new");
+$("search").addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); toast("Search isn't part of this prototype."); }});
+
+/* ---------- Consultation modal ---------- */
+let cDay=null, cSlot=null, lastFocus=null;
+const SLOTS = ["9:00 AM","10:30 AM","11:30 AM","1:00 PM","2:30 PM","4:00 PM"];
+function buildDays(){
+  const out=[]; const d=new Date(2026,9,29); // starts the day after "today" in the prototype
+  while(out.length<5){ const dow=d.getDay(); if(dow!==0&&dow!==6) out.push(new Date(d)); d.setDate(d.getDate()+1); }
+  $("cDays").innerHTML = out.map((x,i)=>`<button type="button" data-day="${i}" aria-pressed="false">${x.toLocaleDateString("en-US",{weekday:"short"})}<small>${x.toLocaleDateString("en-US",{month:"short",day:"numeric"})}</small></button>`).join("");
+  $("cDays").dataset.labels = JSON.stringify(out.map(x=>x.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})));
+  $("cSlots").innerHTML = SLOTS.map((s,i)=>`<button type="button" data-slot="${i}" aria-pressed="false">${s}</button>`).join("");
+}
+function openConsult(){
+  lastFocus = document.activeElement; buildDays(); cDay=cSlot=null; $("cTopic").value="";
+  $("cPick").hidden=false; $("cDone").hidden=true; $("cErr").hidden=true;
+  $("consultModal").hidden=false; $("cClose").focus();
+}
+function closeConsult(){ $("consultModal").hidden=true; if(lastFocus) lastFocus.focus(); }
+$("consultBtn").onclick = openConsult;
+$("cClose").onclick = closeConsult; $("cOk").onclick = closeConsult;
+$("consultModal").addEventListener("click", e=>{ if(e.target.id==="consultModal") closeConsult(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && !$("consultModal").hidden) closeConsult(); });
+$("cDays").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; cDay=+b.dataset.day;
+  $("cDays").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b)); });
+$("cSlots").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; cSlot=+b.dataset.slot;
+  $("cSlots").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b)); });
+$("cBook").onclick = ()=>{
+  if(cDay===null||cSlot===null){ $("cErr").hidden=false; return; }
+  const day = JSON.parse($("cDays").dataset.labels)[cDay];
+  $("cDoneText").textContent = `${day} at ${SLOTS[cSlot]} CT. We'll email a video link to the address on your account.`;
+  $("cPick").hidden=true; $("cDone").hidden=false; $("cOk").focus();
+};
+
+/* ---------- Utils ---------- */
+let tt;
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,2800); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+route();
+})();
+</script>
+
+</body></html>
